@@ -1,0 +1,49 @@
+.container.menu {
+  align-items: center;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  width: 50%;
+}
+
+.identity {
+  margin: 1rem 1rem;
+}
+
+.card-footer.footer {
+  display: flex;
+  justify-content: end;
+}
+
+.inventory {
+  margin: 2rem 5rem 1rem 5rem;
+}
+
+.inventory-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.inventory-items {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.inventory-nav > button > svg {
+  cursor: pointer;
+}
+
+.inventory-nav > button > label {
+  cursor: pointer;
+}

@@ -1,0 +1,109 @@
+<div class="container menu">
+  <div class="main"  *ngIf="showWelcome">
+    <div class="card text-dark bg-light mb-3" id="card-welcome" style="background-color: rgb(231 231 231 / 14%) !important">
+      <div class="card-header flex-column justify-content-start">
+        <h1 class="">Control de inventario</h1>
+      </div>
+      <div class="card-body flex-row justify-content-between">
+        <div>
+          <label class="text-black">Selecciona el usuario para poder continuar</label>
+        </div>
+        <form [formGroup]="formEntry">
+          <div class="form-group identity" >
+            <ng-multiselect-dropdown [settings]="dropDownSettings"
+                                     [data]="dataMultiSelect"
+                                     [placeholder]="'Seleccionar usuario..'"
+                                     formControlName="selectedUser"
+            ></ng-multiselect-dropdown>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer footer">
+        <button class="btn btn-primary" [disabled]="formEntry.get('selectedUser')?.invalid" (click)="onClickUserSelected()">
+          Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="inventory" *ngIf="showList || showTable">
+    <div class="inventory-nav">
+      <button class="btn btn-warning" (click)="showWelcome = true; showList = false; showTable = false">
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><path d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V256.9L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6h29.7c33.7 0 64.9 17.7 82.3 46.6l58.3 97c9.1 15.1 4.2 34.8-10.9 43.9s-34.8 4.2-43.9-10.9L232 256.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V352H152z"/></svg>
+        <label style="margin-left: 7px; vertical-align: initial !important;">Cambiar usuario</label>
+      </button>
+      <button class="btn btn-primary" (click)="onClickAddOrUpdateProduct()" [disabled]="!showList">
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
+        <label class="text-black" style="margin-left: 7px; vertical-align: initial !important;">Agregar nuevo artículo</label>
+      </button>
+    </div>
+    <div class="inventory-items">
+      <div class="card text-dark bg-light mb-3" style="width: 100%">
+        <div class="card-body" *ngIf="showList">
+          <div style="flex-direction: row; display: flex; justify-content: space-between;">
+            <h1 style="text-align: center; font-size: 1.5rem !important;">Lista de inventario registrada por {{ userService.selectedUser.name }}</h1>
+            <div class="input-group mb-3" style="width: 20%">
+              <button class="btn btn-outline-secondary" type="button" id="button-find">Buscar</button>
+              <input type="text" class="form-control" placeholder="" aria-label="Busca por el nombre del producto" aria-describedby="button-find" (keyup)="searchProductsByName($event)">
+            </div>
+          </div>
+          <ul class="list-group" *ngFor="let product of productList" style="margin-top: 1rem; flex-direction: row; justify-content: space-between">
+            <li class="list-group-item d-flex justify-content-between align-items-start" style="width: 79%">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">{{product.product_name}}</div>
+                Última modificación: {{product.entry_date}}
+              </div>
+              <div>
+                <label style="margin-right: 0.5rem">Cantidad:</label>
+                <span class="badge bg-primary rounded-pill">{{product.quantity}}</span>
+              </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-center align-items-center" style="width: 20%">
+              <div style="width: 57%; display: flex; flex-direction: row; justify-content: space-between">
+                <div>
+                  <button class="btn btn-success" (click)="onClickAddOrUpdateProduct(product)">
+                    <svg style="vertical-align: initial !important;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152V424c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V312c0-13.3-10.7-24-24-24s-24 10.7-24 24V424c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V152c0-22.1 17.9-40 40-40H200c13.3 0 24-10.7 24-24s-10.7-24-24-24H88z"/></svg>
+                  </button>
+                </div>
+                <div>
+                  <button class="btn btn-danger" (click)="deleteProduct(product.id)">
+                    <svg style="vertical-align: initial !important;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; align-items: center" *ngIf="showTable">
+          <form [formGroup]="formProduct" novalidate>
+            <h1 style="text-align: center; font-size: 1.5rem !important;">Edita el producto</h1>
+            <table class="table table-striped table-bordered" style="margin-top: 2rem; width: 950px;">
+              <tbody>
+              <tr>
+                <th scope="row">
+                  <label class="col-form-label">Nombre: </label>
+                </th>
+                <td colspan="3">
+                  <input type="text" class="form-control" formControlName="name" [value]="formProduct.get('name')?.value">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <label class="col-form-label">Cantidad: </label>
+                </th>
+                <td colspan="3">
+                  <input type="text" class="form-control" formControlName="quantity">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </form>
+          <div>
+            <button class="btn btn-primary" (click)="saveOrUpdateInfoOfProduct()">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
